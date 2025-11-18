@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/durid-ah/nmap-api/db"
 	"github.com/durid-ah/nmap-api/config"
+	"github.com/durid-ah/nmap-api/db"
 
 	"github.com/Ullaakut/nmap/v3"
 )
@@ -82,7 +82,7 @@ func CreateScannerTask(storage db.Storage, config *config.Config) func(ctx conte
 		newHostIPMap, err := scanner.Run(scannerCtx)
 		if err != nil {
 			slog.Error("unable to run nmap scan", "owner", scannerCtx.Value(ownerContextKey), "error", err)
-			return 
+			return
 		}
 
 		existingHostIPMap, err := storage.GetHostIPMap(scannerCtx)
@@ -93,27 +93,21 @@ func CreateScannerTask(storage db.Storage, config *config.Config) func(ctx conte
 
 		toAddHosts, toUpdateHosts, toDeleteHosts := db.DiffHostIPMaps(newHostIPMap, existingHostIPMap)
 
-		if len(toAddHosts) > 0 {
-			err = storage.CreateHosts(scannerCtx, toAddHosts)
+		err = storage.CreateHosts(scannerCtx, toAddHosts)
+		if err != nil {
+			slog.Error("unable to create hosts", "owner", scannerCtx.Value(ownerContextKey), "error", err)
+		}
+
+		for _, host := range toUpdateHosts {
+			err = storage.UpdateHost(scannerCtx, &host)
 			if err != nil {
-				slog.Error("unable to create hosts", "owner", scannerCtx.Value(ownerContextKey), "error", err)
+				slog.Error("unable to update host", "owner", scannerCtx.Value(ownerContextKey), "error", err)
 			}
 		}
 
-		if len(toUpdateHosts) > 0 {
-			for _, host := range toUpdateHosts {
-				err = storage.UpdateHost(scannerCtx, &host)
-				if err != nil {
-					slog.Error("unable to update host", "owner", scannerCtx.Value(ownerContextKey), "error", err)
-				}
-			}
-		}
-
-		if len(toDeleteHosts) > 0 {
-			err = storage.DeleteHosts(scannerCtx, toDeleteHosts)
-			if err != nil {
-				slog.Error("unable to delete hosts", "owner", scannerCtx.Value(ownerContextKey), "error", err)
-			}
+		err = storage.DeleteHosts(scannerCtx, toDeleteHosts)
+		if err != nil {
+			slog.Error("unable to delete hosts", "owner", scannerCtx.Value(ownerContextKey), "error", err)
 		}
 	}
 }

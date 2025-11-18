@@ -79,6 +79,10 @@ func (s *Storage) DeleteHost(ctx context.Context, hostname string) error {
 }
 
 func (s *Storage) DeleteHosts(ctx context.Context, hostnames []string) error {
+	if len(hostnames) == 0 {
+		return nil
+	}
+
 	result, err := gorm.G[Host](s.db).
 		Where("hostname IN ?", hostnames).
 		Delete(ctx)
@@ -86,7 +90,7 @@ func (s *Storage) DeleteHosts(ctx context.Context, hostnames []string) error {
 		s.logger.Error("failed to delete hosts", "error", err, "hostnames", hostnames)
 		return err
 	}
-	
+
 	if result == 0 {
 		s.logger.Warn("no hosts found to delete", "hostnames", hostnames)
 		return fmt.Errorf("no hosts found to delete")
