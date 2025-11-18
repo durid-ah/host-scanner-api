@@ -16,7 +16,7 @@ import (
 func main() {
 	cfg := config.NewConfig()
 
-	_, err := db.NewStorage(slog.Default())
+	storage, err := db.NewStorage(slog.Default())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,11 +31,11 @@ func main() {
 
 	// run the scanner once at startup to populate the db
 	slog.Info("running intial scan to populate the db...")
-	scanTask := nmapscanner.CreateScannerTask(cfg)
+	scanTask := nmapscanner.CreateScannerTask(*storage, cfg)
 	scanTask(context.Background())
 	slog.Info("intial scan completed")
 
-	scheduler := cronscheduler.NewBackgroundScheduler(cfg)
+	scheduler := cronscheduler.NewBackgroundScheduler(*storage, cfg)
 	scheduler.Start()
 
 	defer func() {

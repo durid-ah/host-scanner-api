@@ -6,6 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/durid-ah/nmap-api/config"
+	"github.com/durid-ah/nmap-api/db"
 	"github.com/durid-ah/nmap-api/scanner"
 	"github.com/go-co-op/gocron/v2"
 )
@@ -22,7 +23,7 @@ type BackgroundScheduler struct {
 	cancel    context.CancelFunc
 }
 
-func NewBackgroundScheduler(config *config.Config) *BackgroundScheduler {
+func NewBackgroundScheduler(storage db.Storage, config *config.Config) *BackgroundScheduler {
 	ctx, cancel := context.WithCancel(
 		context.WithValue(context.Background(), ownerContextKey, "scheduler"))
 
@@ -36,7 +37,7 @@ func NewBackgroundScheduler(config *config.Config) *BackgroundScheduler {
 	job, err := scheduler.NewJob(
 		gocron.CronJob(config.NmapCronTab, false),
 		gocron.NewTask(
-			nmapscanner.CreateScannerTask(config),
+			nmapscanner.CreateScannerTask(storage, config),
 		),
 		gocron.WithContext(ctx),
 	)
