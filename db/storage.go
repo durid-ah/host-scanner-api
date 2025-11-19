@@ -9,11 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type Host struct {
-	Hostname string `gorm:"primaryKey;not null"`
-	IP       string `gorm:"unique;not null"`
-}
-
 type Storage struct {
 	db     *gorm.DB
 	logger *slog.Logger
@@ -33,6 +28,10 @@ func NewStorage(logger *slog.Logger) (*Storage, error) {
 func (s *Storage) CreateHost(ctx context.Context, host *Host) error {
 
 	return gorm.G[Host](s.db).Create(ctx, host)
+}
+
+func (s *Storage) CreateHosts(ctx context.Context, hosts []Host) error {
+	return gorm.G[Host](s.db).CreateInBatches(ctx, &hosts, 100)
 }
 
 func (s *Storage) UpdateHost(ctx context.Context, host *Host) error {
@@ -75,6 +74,26 @@ func (s *Storage) DeleteHost(ctx context.Context, hostname string) error {
 	if result == 0 {
 		s.logger.Warn("no host found to delete", "hostname", hostname)
 		return fmt.Errorf("no host found to delete")
+	}
+	return nil
+}
+
+func (s *Storage) DeleteHosts(ctx context.Context, hostnames []string) error {
+	if len(hostnames) == 0 {
+		return nil
+	}
+
+	result, err := gorm.G[Host](s.db).
+		Where("hostname IN ?", hostnames).
+		Delete(ctx)
+	if err != nil {
+		s.logger.Error("failed to delete hosts", "error", err, "hostnames", hostnames)
+		return err
+	}
+
+	if result == 0 {
+		s.logger.Warn("no hosts found to delete", "hostnames", hostnames)
+		return fmt.Errorf("no hosts found to delete")
 	}
 	return nil
 }

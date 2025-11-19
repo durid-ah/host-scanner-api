@@ -7,16 +7,16 @@ import (
 	"os"
 	"time"
 
-	"github.com/durid-ah/nmap-api/internal/config"
-	"github.com/durid-ah/nmap-api/internal/cron_scheduler"
-	"github.com/durid-ah/nmap-api/internal/db"
-	"github.com/durid-ah/nmap-api/internal/nmap_scanner"
+	"github.com/durid-ah/nmap-api/config"
+	"github.com/durid-ah/nmap-api/cron_scheduler"
+	"github.com/durid-ah/nmap-api/db"
+	"github.com/durid-ah/nmap-api/scanner"
 )
 
 func main() {
 	cfg := config.NewConfig()
 
-	_, err := db.NewStorage(slog.Default())
+	storage, err := db.NewStorage(slog.Default())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,11 +31,11 @@ func main() {
 
 	// run the scanner once at startup to populate the db
 	slog.Info("running intial scan to populate the db...")
-	scanTask := nmapscanner.CreateScannerTask(cfg)
+	scanTask := nmapscanner.CreateScannerTask(*storage, cfg)
 	scanTask(context.Background())
 	slog.Info("intial scan completed")
 
-	scheduler := cronscheduler.NewBackgroundScheduler(cfg)
+	scheduler := cronscheduler.NewBackgroundScheduler(*storage, cfg)
 	scheduler.Start()
 
 	defer func() {
