@@ -72,6 +72,15 @@ func (s *Storage) GetHostIPMap(ctx context.Context) (map[string]string, error) {
 	return hostIPMap, nil
 }
 
+func (s *Storage) GetHost(ctx context.Context, hostname string) (*Host, error) {
+	host, err := gorm.G[Host](s.db).Where("hostname = ?", hostname).First(ctx)
+	if err != nil {
+		s.logger.Error("failed to get host", "error", err, "hostname", hostname)
+		return nil, err
+	}
+	return &host, nil
+}
+
 func (s *Storage) DeleteHost(ctx context.Context, hostname string) error {
 	result, err := gorm.G[Host](s.db).
 		Where("hostname = ?", hostname).
