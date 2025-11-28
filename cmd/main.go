@@ -23,7 +23,7 @@ func createFiberServer(storage *db.Storage) *fiber.App {
 	api := humafiber.New(app, huma.DefaultConfig("Nmap API", "0.0.1"))
 
 	huma.Get(api, "/api/v1/hosts", handler.GetAllHosts(storage))
-
+	huma.Get(api, "/api/v1/hosts/{hostname}", handler.GetHost(storage))
 	return app
 }
 
