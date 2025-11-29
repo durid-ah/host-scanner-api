@@ -50,6 +50,15 @@ func (s *Storage) UpdateHost(ctx context.Context, host *Host) error {
 	return nil
 }
 
+func (s *Storage) GetAllHosts(ctx context.Context) ([]Host, error) {
+	hosts, err := gorm.G[Host](s.db).Find(ctx)
+	if err != nil {
+		s.logger.Error("failed to get all hosts", "error", err)
+		return nil, err
+	}
+	return hosts, nil
+}
+
 func (s *Storage) GetHostIPMap(ctx context.Context) (map[string]string, error) {
 	hosts, err := gorm.G[Host](s.db).Find(ctx)
 	if err != nil {
@@ -61,6 +70,15 @@ func (s *Storage) GetHostIPMap(ctx context.Context) (map[string]string, error) {
 		hostIPMap[host.Hostname] = host.IP
 	}
 	return hostIPMap, nil
+}
+
+func (s *Storage) GetHost(ctx context.Context, hostname string) (*Host, error) {
+	host, err := gorm.G[Host](s.db).Where("hostname = ?", hostname).First(ctx)
+	if err != nil {
+		s.logger.Error("failed to get host", "error", err, "hostname", hostname)
+		return nil, err
+	}
+	return &host, nil
 }
 
 func (s *Storage) DeleteHost(ctx context.Context, hostname string) error {

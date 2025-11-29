@@ -2,16 +2,30 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"log/slog"
 	"os"
-	"time"
 
 	"github.com/durid-ah/nmap-api/config"
-	"github.com/durid-ah/nmap-api/cron_scheduler"
+	cronscheduler "github.com/durid-ah/nmap-api/cron_scheduler"
 	"github.com/durid-ah/nmap-api/db"
-	"github.com/durid-ah/nmap-api/scanner"
+	"github.com/durid-ah/nmap-api/handler"
+	nmapscanner "github.com/durid-ah/nmap-api/scanner"
+
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
+	"github.com/gofiber/fiber/v2"
 )
+
+func createFiberServer(storage *db.Storage) *fiber.App {
+	app := fiber.New()
+	api := humafiber.New(app, huma.DefaultConfig("Nmap API", "0.0.1"))
+
+	huma.Get(api, "/api/v1/hosts", handler.GetAllHosts(storage))
+	huma.Get(api, "/api/v1/hosts/{hostname}", handler.GetHost(storage))
+	return app
+}
 
 func main() {
 	cfg := config.NewConfig()
@@ -21,7 +35,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// TODO: Child logger
 	opts := slog.HandlerOptions{
 		Level: slog.LevelInfo,
 	}
@@ -47,6 +60,6 @@ func main() {
 		}
 	}()
 
-	time.Sleep(time.Minute * 2)
-
+	app := createFiberServer(storage)
+	app.Listen(fmt.Sprintf("%s:%s", cfg.NmapAPIHost, cfg.NmapAPIPort))
 }
