@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/durid-ah/nmap-api/config"
-	"github.com/durid-ah/nmap-api/db"
+	"github.com/durid-ah/host-scanner-api/config"
+	"github.com/durid-ah/host-scanner-api/db"
 
 	"github.com/Ullaakut/nmap/v3"
 )

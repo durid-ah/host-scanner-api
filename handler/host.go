@@ -2,7 +2,7 @@ package handler
 
 import (
 	"context"
-	"github.com/durid-ah/nmap-api/db"
+	"github.com/durid-ah/host-scanner-api/db"
 )
 
 type HostsResponse struct {

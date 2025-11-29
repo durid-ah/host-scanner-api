@@ -5,9 +5,9 @@ import (
 	"log"
 	"log/slog"
 
-	"github.com/durid-ah/nmap-api/config"
-	"github.com/durid-ah/nmap-api/db"
-	"github.com/durid-ah/nmap-api/scanner"
+	"github.com/durid-ah/host-scanner-api/config"
+	"github.com/durid-ah/host-scanner-api/db"
+	"github.com/durid-ah/host-scanner-api/scanner"
 	"github.com/go-co-op/gocron/v2"
 )
 
