@@ -1,4 +1,4 @@
-module github.com/durid-ah/nmap-api
+module github.com/durid-ah/host-scanner-api
 
 go 1.25.1
 

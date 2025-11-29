@@ -7,11 +7,11 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/durid-ah/nmap-api/config"
-	cronscheduler "github.com/durid-ah/nmap-api/cron_scheduler"
-	"github.com/durid-ah/nmap-api/db"
-	"github.com/durid-ah/nmap-api/handler"
-	nmapscanner "github.com/durid-ah/nmap-api/scanner"
+	"github.com/durid-ah/host-scanner-api/config"
+	cronscheduler "github.com/durid-ah/host-scanner-api/cron_scheduler"
+	"github.com/durid-ah/host-scanner-api/db"
+	"github.com/durid-ah/host-scanner-api/handler"
+	nmapscanner "github.com/durid-ah/host-scanner-api/scanner"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humafiber"
