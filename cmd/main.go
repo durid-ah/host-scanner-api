@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"fmt"
 	"log"
 	"log/slog"
 	"os"
@@ -61,8 +60,6 @@ func main() {
 		}
 	}()
 
-	app := createFiberServer(storage)
-	app.Listen(fmt.Sprintf("%s:%s", cfg.NmapAPIHost, cfg.NmapAPIPort))
 	app := createFiberServer(storage)
 	app.Listen(fmt.Sprintf("%s:%s", cfg.NmapAPIHost, cfg.NmapAPIPort))
 }
