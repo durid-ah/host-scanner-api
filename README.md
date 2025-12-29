@@ -1,6 +1,11 @@
 # Host Scanner API
 Host Scanner API is a service that automatically scans your network to discover which hosts are currently online and maps their hostnames to IP addresses. It exposes a simple HTTP API allowing you to retrieve lists of known hosts and their IPs. Scans are performed using Nmap and run on a configurable schedule, with scan results stored to a persistent database. This app is useful for monitoring network inventory or tracking device availability in dynamic environments.
 
+## Running the app:
+The app can be run using docker
+
+```docker pull ghcr.io/durid-ah/host-scanner-api:0.0.5```
+
 ## Configuring the app
 The app can be configured using the following environment variables
 - `SCANNER_API_HOST` - The IP address the HTTP API server listens on (default: `0.0.0.0`)
