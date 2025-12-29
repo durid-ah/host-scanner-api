@@ -1,10 +1,9 @@
 # syntax=docker/dockerfile:1
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
+ARG SCANNER_API_HOST="0.0.0.0"
+ARG SCANNER_API_PORT="8080"
+ARG SCANNER_CRON_TAB="*/5 * * * *"
+ARG SCANNER_TARGET="192.168.1.*"
 
 ################################################################################
 # Create a stage for building the application.
@@ -45,6 +44,15 @@ RUN --mount=type=cache,target=/go/pkg/mod/ \
 # reproducibility is important, consider using a versioned tag
 # (e.g., alpine:3.17.2) or SHA (e.g., alpine@sha256:c41ab5c992deb4fe7e5da09f67a8804a46bd0592bfdf0b1847dde0e0889d2bff).
 FROM alpine:latest AS final
+ARG SCANNER_API_HOST
+ARG SCANNER_API_PORT
+ARG SCANNER_CRON_TAB
+ARG SCANNER_TARGET
+
+ENV SCANNER_API_HOST=${SCANNER_API_HOST}
+ENV SCANNER_API_PORT=${SCANNER_API_PORT}
+ENV SCANNER_CRON_TAB=${SCANNER_CRON_TAB}
+ENV SCANNER_TARGET=${SCANNER_TARGET}
 
 # Install any runtime dependencies that are needed to run your application.
 # Leverage a cache mount to /var/cache/apk/ to speed up subsequent builds.
@@ -60,7 +68,7 @@ RUN --mount=type=cache,target=/var/cache/apk \
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
 # ARG UID=10001
-# RUN adduser \
+# RUN adduser `\
 #     --disabled-password \
 #     --gecos "" \
 #     --home "/nonexistent" \
