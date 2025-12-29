@@ -7,10 +7,10 @@ import (
 )
 
 type Config struct {
-	NmapAPIHost string `env:"NMAP_API_HOST" default:"0.0.0.0"`
-	NmapAPIPort string `env:"NMAP_API_PORT" default:"8080"`
-	NmapCronTab string `env:"NMAP_CRON_TAB" default:"*/1 * * * *"`
-	NmapTarget  string `env:"NMAP_TARGET" default:"192.168.1.*"`
+	NmapAPIHost string `env:"SCANNER_API_HOST" default:"0.0.0.0"`
+	NmapAPIPort string `env:"SCANNER_API_PORT" default:"8080"`
+	NmapCronTab string `env:"SCANNER_CRON_TAB" default:"*/5 * * * *"`
+	NmapTarget  string `env:"SCANNER_TARGET" default:"192.168.1.*"`
 }
 
 func NewConfig() *Config {
