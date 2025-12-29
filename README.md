@@ -5,7 +5,7 @@ Host Scanner API is a service that automatically scans your network to discover 
 The app can be run using docker
 
 ```
-docker pull ghcr.io/durid-ah/host-scanner-api:0.0.5
+docker pull ghcr.io/durid-ah/host-scanner-api:latest
 ```
 
 ## Configuring the app
