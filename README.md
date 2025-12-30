@@ -9,7 +9,7 @@ docker pull ghcr.io/durid-ah/host-scanner-api:latest
 ```
 
 ## Configuring the app
-The app can be configured using the following environment variables
+The app can be configured using the following environment variables:
 - `SCANNER_API_HOST` - The IP address the HTTP API server listens on (default: `0.0.0.0`)
 - `SCANNER_API_PORT` - The TCP port the API server listens on (default: `8080`)
 - `SCANNER_CRON_TAB` - Cron expression defining how often network scans are performed (default: `*/5 * * * *`, which is every 5 minutes)
